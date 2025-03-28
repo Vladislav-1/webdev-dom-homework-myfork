@@ -4,6 +4,7 @@
 <head>
   <title>Проект "Комменты"</title>
   <meta charset="utf-8" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="styles.css" />
 </head>
 
@@ -83,8 +84,19 @@
   const likeButtonElement = document.querySelector('.like-button');
 
   buttonElement.addEventListener('click', () => {
+    if (inputElement.value === '') {
+      inputElement.style = 'background: rgb(255,200,200)';
+      return;
+    }
+    if (textareaElement.value === '') {
+      textareaElement.style = 'background: rgb(255,200,200)';
+      return;
+    }
+
     const oldHtml = listElement.innerHTML;
     listElement.innerHTML = oldHtml + `<li class="comment"><div class="comment-header"><div>${inputElement.value}</div><div>${currentDataNumber}.${currentMonth}.${currentYear} ${currentLocalTime}</div></div><div class="comment-body"><div class="comment-text">${textareaElement.value}</div></div><div class="comment-footer"><div class="likes"><span class="likes-counter">0</span><button class="like-button"></button></div></div></li>`;
+    inputElement.value = '';
+    textareaElement.value = '';
   });
 
 
