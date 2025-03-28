@@ -85,11 +85,11 @@
 
   buttonElement.addEventListener('click', () => {
     if (inputElement.value === '') {
-      inputElement.style = 'background: rgb(255,200,200)';
+      inputElement.style = 'background: rgb(255,0,0)';
       return;
     }
     if (textareaElement.value === '') {
-      textareaElement.style = 'background: rgb(255,200,200)';
+      textareaElement.style = 'background: rgb(255,0,0)';
       return;
     }
 
@@ -97,6 +97,8 @@
     listElement.innerHTML = oldHtml + `<li class="comment"><div class="comment-header"><div>${inputElement.value}</div><div>${currentDataNumber}.${currentMonth}.${currentYear} ${currentLocalTime}</div></div><div class="comment-body"><div class="comment-text">${textareaElement.value}</div></div><div class="comment-footer"><div class="likes"><span class="likes-counter">0</span><button class="like-button"></button></div></div></li>`;
     inputElement.value = '';
     textareaElement.value = '';
+    inputElement.style = 'background: rgb(255,255,255)';
+    textareaElement.style = 'background: rgb(255,255,255)';
   });
 
 
