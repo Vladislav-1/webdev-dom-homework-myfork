@@ -40,16 +40,6 @@
   let currentLocalTime = currentData.toLocaleTimeString('ru-RU', options);
   /* ------------------------- */
 
-  /* -- Переменные для работы с элементами DOM -- */
-
-
-  /* -------------------------------------------- */
-
-
-
-
-
-
   /* -- 01. Массив из двух комментариев -- */
 
   const comments = [
@@ -71,7 +61,7 @@
 
   /* ------------------------------------- */
 
-  /* -- Рендер-функция -- */
+  /* -- 02. Рендер-функция -- */
 
   const renderComments = () => {
     const list = document.querySelector(".comments");
@@ -123,24 +113,37 @@
   const name = document.getElementById("name-input");
   const text = document.getElementById("text-input");
 
+  /* -- 03. Клик по кнопке "Написать" -- */
   addButton.addEventListener("click", () => {
+
     const newComment = {
       name: name.value,
       date: `${currentDataNumber}.${currentMonth}.${currentYear} ${currentLocalTime}`,
       text: text.value,
       likes: 0,
       isLiked: false
-    };
+    }
 
-    comments.push(newComment);
+    /* -- 04. Проверка заполнения полей ввода имени автора комментария и текста коммекнтария -- */
+    if (name.value === "") { // Поле ввода имени автора комментария НЕ ЗАПОЛНЕНО
+      name.style.background = "red";
+    };
+    if (text.value === "") { // Поле ввода текста комментария НЕ ЗАПОЛНЕНО
+      text.style.background = "red";
+    };
+    if (name.value != "" && text.value != "") { // Поле ввода имени автора комментари и текста комментария ЗАПОЛНЕНЫ
+      comments.push(newComment);
+      name.style.background = "rgb(255,255,255)";
+      text.style.background = "rgb(255,255,255)";
+    };
+    /* ---------------------------------------------------------------------------------------- */
 
     renderComments();
 
     name.value = "";
     text.value = "";
   });
-
-
+  /* ------------------------------- */
 
   /* -- ФИНИШ-- */
   /* console.log("It works!"); */
