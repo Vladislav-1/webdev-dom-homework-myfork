@@ -10,45 +10,10 @@
 
 <body>
   <div class="container">
-    <ul class="comments" id="comments">
-      <li class="comment">
-        <div class="comment-header">
-          <div>Глеб Фокин</div>
-          <div>12.02.22 12:18</div>
-        </div>
-        <div class="comment-body">
-          <div class="comment-text">
-            Это будет первый комментарий на этой странице
-          </div>
-        </div>
-        <div class="comment-footer">
-          <div class="likes">
-            <span class="likes-counter">3</span>
-            <button class="like-button"></button>
-          </div>
-        </div>
-      </li>
-      <li class="comment">
-        <div class="comment-header">
-          <div>Варвара Н.</div>
-          <div>13.02.22 19:22</div>
-        </div>
-        <div class="comment-body">
-          <div class="comment-text">
-            Мне нравится как оформлена эта страница! ❤
-          </div>
-        </div>
-        <div class="comment-footer">
-          <div class="likes">
-            <span class="likes-counter">75</span>
-            <button class="like-button -active-like"></button>
-          </div>
-        </div>
-      </li>
-    </ul>
+    <ul class="comments" id="comments"></ul>
     <div class="add-form">
-      <input type="text" id="addFormName" class="add-form-name" placeholder="Введите ваше имя" />
-      <textarea type="textarea" id="addFormText" class="add-form-text" placeholder="Введите ваш коментарий"
+      <input type="text" id="name-input" class="add-form-name" placeholder="Введите ваше имя" />
+      <textarea type="textarea" id="text-input" class="add-form-text" placeholder="Введите ваш коментарий"
         rows="4"></textarea>
       <div class="add-form-row">
         <button id="addFormButton" class="add-form-button">Написать</button>
@@ -73,35 +38,112 @@
   }
   let options = { hour: '2-digit', minute: '2-digit' };
   let currentLocalTime = currentData.toLocaleTimeString('ru-RU', options);
+  /* ------------------------- */
 
+  /* -- 01. Массив из двух комментариев -- */
 
-  /* -- Переменные для работы с полями ввода информации -- */
-  const inputElement = document.getElementById('addFormName'); // переменная для поля имени
-  const textareaElement = document.getElementById('addFormText'); // переменная для поля текста
-  const buttonElement = document.getElementById('addFormButton'); // переменная для кнопки "Написать"
-  const listElement = document.getElementById('comments'); // переменная для списка
-  const likesCounterElement = document.querySelector('.likes-counter');
-  const likeButtonElement = document.querySelector('.like-button');
-
-  buttonElement.addEventListener('click', () => {
-    if (inputElement.value === '') {
-      inputElement.style = 'background: rgb(255,0,0)';
-      return;
+  const comments = [
+    {
+      name: "Глеб Фокин",
+      date: `${currentDataNumber}.${currentMonth}.${currentYear} ${currentLocalTime}`,
+      text: "Это будет первый комментарий на этой странице",
+      likes: 3,
+      isLiked: false
+    },
+    {
+      name: "Варвара Н.",
+      date: `${currentDataNumber}.${currentMonth}.${currentYear} ${currentLocalTime}`,
+      text: "Мне нравится как оформлена эта страница! ❤",
+      likes: 75,
+      isLiked: false
     }
-    if (textareaElement.value === '') {
-      textareaElement.style = 'background: rgb(255,0,0)';
-      return;
+  ];
+
+  /* ------------------------------------- */
+
+  /* -- 02. Рендер-функция -- */
+
+  const renderComments = () => {
+    const list = document.querySelector(".comments");
+    list.innerHTML = comments.map((comment, index) => {
+      return `
+      <li class="comment" data-index="${index}">
+        <div class="comment-header">
+          <div>${comment.name}</div>
+          <div>${comment.date}</div>
+        </div>
+        <div class="comment-body">
+          <div class="comment-text">
+            ${comment.text}
+          </div>
+        </div>
+        <div class="comment-footer">
+          <div class="likes">
+            <span class="likes-counter">${comment.likes}</span>
+            <button data-index="${index}" class="like-button ${comment.isLiked ? "-active-like" : ""}"></button>
+          </div>
+        </div>
+      </li>
+      `
+    }).join("");
+
+    const likeButtons = document.querySelectorAll(".like-button");
+
+    for (const likeButton of likeButtons) {
+      likeButton.addEventListener("click", () => {
+        const index = likeButton.dataset.index;
+        const comment = comments[index];
+
+        comment.likes = comment.isLiked ? comment.likes - 1 : comment.likes + 1;
+
+        comment.isLiked = !comment.isLiked;
+
+        renderComments();
+      });
+    };
+  };
+
+  /* -------------------- */
+
+  /* -- Запуск рендер-функции -- */
+  renderComments();
+  /* ---------------------------------- */
+
+  const addButton = document.querySelector(".add-form-button");
+  const name = document.getElementById("name-input");
+  const text = document.getElementById("text-input");
+
+  /* -- 03. Клик по кнопке "Написать" -- */
+  addButton.addEventListener("click", () => {
+
+    const newComment = {
+      name: name.value,
+      date: `${currentDataNumber}.${currentMonth}.${currentYear} ${currentLocalTime}`,
+      text: text.value,
+      likes: 0,
+      isLiked: false
     }
 
-    const oldHtml = listElement.innerHTML;
-    listElement.innerHTML = oldHtml + `<li class="comment"><div class="comment-header"><div>${inputElement.value}</div><div>${currentDataNumber}.${currentMonth}.${currentYear} ${currentLocalTime}</div></div><div class="comment-body"><div class="comment-text">${textareaElement.value}</div></div><div class="comment-footer"><div class="likes"><span class="likes-counter">0</span><button class="like-button"></button></div></div></li>`;
-    inputElement.value = '';
-    textareaElement.value = '';
-    inputElement.style = 'background: rgb(255,255,255)';
-    textareaElement.style = 'background: rgb(255,255,255)';
+    /* -- 04. Проверка заполнения полей ввода имени автора комментария и текста коммекнтария -- */
+    if (name.value === "") { // Поле ввода имени автора комментария НЕ ЗАПОЛНЕНО
+      name.style.background = "red";
+    };
+    if (text.value === "") { // Поле ввода текста комментария НЕ ЗАПОЛНЕНО
+      text.style.background = "red";
+    };
+    if (name.value != "" && text.value != "") { // Поле ввода имени автора комментари и текста комментария ЗАПОЛНЕНЫ
+      comments.push(newComment);
+      name.style.background = "rgb(255,255,255)";
+      text.style.background = "rgb(255,255,255)";
+    };
+    /* ---------------------------------------------------------------------------------------- */
+
+    renderComments();
+
+    name.value = "";
+    text.value = "";
   });
-
-
+  /* ------------------------------- */
 
   /* -- ФИНИШ-- */
   /* console.log("It works!"); */
