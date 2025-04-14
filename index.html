@@ -28,34 +28,43 @@
 
   /* -- МОЙ КОД -- */
 
+  /* -- Общие переменные -- */
+  const name = document.getElementById("name-input"); // Нахождение по идентификатору поля ввода имени автора комментария
+  const text = document.getElementById("text-input"); // Нахождение по идентификатору поля ввода текста комментария
+  /* ---------------------- */
+
   /* -- Переменные для даты -- */
-  let currentData = new Date;
-  let currentDataNumber = currentData.getDate();
-  let currentMonth = currentData.getMonth() + 1;
-  let currentYear = currentData.getFullYear() % 100;
+  let currentData = new Date; // Создана переменная текущей даты
+  let currentDataNumber = currentData.getDate(); // Получение текущего числа даты
+  let currentMonth = currentData.getMonth() + 1; // Получение текущего месяца
+  let currentYear = currentData.getFullYear() % 100; // Получение последних двух цифр текущего года
   if (currentMonth < 10) {
-    currentMonth = `0${currentMonth}`;
+    currentMonth = `0${currentMonth}`; // Если число текущего месяца представлено одной цифрой - добавляем передней 0
   }
-  let options = { hour: '2-digit', minute: '2-digit' };
-  let currentLocalTime = currentData.toLocaleTimeString('ru-RU', options);
+  let options = { hour: '2-digit', minute: '2-digit' }; // Определение формата представления времени в минутах и секундах
+  let currentLocalTime = currentData.toLocaleTimeString('ru-RU', options); // Поправка текущего времени на местное
   /* ------------------------- */
+
+  const sanitizeHtml = (value) => { // "Санитарная" функция, купирующая зловредные действия третьих лиц через открывающие и закрывающие угловые скобки
+    return value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"); // Замена спецсимволов HTML - угловых скобок - на альтернативно-безобидный синоним
+  };
 
   /* -- 01. Массив из двух комментариев -- */
 
   const comments = [
     {
-      name: "Глеб Фокин",
-      date: `${currentDataNumber}.${currentMonth}.${currentYear} ${currentLocalTime}`,
-      text: "Это будет первый комментарий на этой странице",
-      likes: 3,
-      isLiked: false
+      name: "Глеб Фокин", // Имя автора первого опубликованного комментария
+      date: `${currentDataNumber}.${currentMonth}.${currentYear} ${currentLocalTime}`, // Дата и время комментария
+      text: "Это будет первый комментарий на этой странице", // Текст первого опубликованного комментария
+      likes: 3, // Предустановленное количество поставленных лайков
+      isLiked: false // Флаг состояния лайка
     },
     {
-      name: "Варвара Н.",
-      date: `${currentDataNumber}.${currentMonth}.${currentYear} ${currentLocalTime}`,
-      text: "Мне нравится как оформлена эта страница! ❤",
-      likes: 75,
-      isLiked: false
+      name: "Варвара Н.", // Имя автора второго опубликованного комментария
+      date: `${currentDataNumber}.${currentMonth}.${currentYear} ${currentLocalTime}`, // Дата и время комментария
+      text: "Мне нравится как оформлена эта страница! ❤", // Текст второго опубликованного комментария
+      likes: 75, // Предустановленное количество поставленных лайков
+      isLiked: false // Флаг состояния лайка
     }
   ];
 
@@ -90,9 +99,11 @@
     const likeButtons = document.querySelectorAll(".like-button");
 
     for (const likeButton of likeButtons) {
-      likeButton.addEventListener("click", () => {
-        const index = likeButton.dataset.index;
-        const comment = comments[index];
+      likeButton.addEventListener("click", (event) => {
+        event.stopPropagation(); // Запрет всплытия событий при клике по иконке лайка
+
+        const index = likeButton.dataset.index; // Определение индекса иконки лайка
+        const comment = comments[index]; // Определение комментария по индексу
 
         comment.likes = comment.isLiked ? comment.likes - 1 : comment.likes + 1;
 
@@ -101,6 +112,19 @@
         renderComments();
       });
     };
+
+    /* -- Клик по опубликованному комментарию для ответа на него -- */
+
+    const commentsElements = document.querySelectorAll(".comment"); // Поиск всех комментариев
+
+    for (const commentElement of commentsElements) {
+      commentElement.addEventListener("click", () => { // Присвоение события при клике на найденный элемент
+        const currentComment = comments[commentElement.dataset.index]; // Определение индекса найденным элементам
+        text.value = `${currentComment.name}: "${currentComment.text}"`; // Вывод в область текста нового комментария цитируемого автора и его комментария
+      });
+    };
+    /* ------------------------------------------------------------ */
+
   };
 
   /* -------------------- */
@@ -110,19 +134,20 @@
   /* ---------------------------------- */
 
   const addButton = document.querySelector(".add-form-button");
-  const name = document.getElementById("name-input");
-  const text = document.getElementById("text-input");
+
 
   /* -- 03. Клик по кнопке "Написать" -- */
   addButton.addEventListener("click", () => {
 
     const newComment = {
-      name: name.value,
+      name: sanitizeHtml(name.value), // Применение "санитарной" функции к полю ввода имени автора комментария
       date: `${currentDataNumber}.${currentMonth}.${currentYear} ${currentLocalTime}`,
-      text: text.value,
+      text: sanitizeHtml(text.value), // Применение "санитарной" функции к полю ввода текста комментария
       likes: 0,
       isLiked: false
     }
+
+
 
     /* -- 04. Проверка заполнения полей ввода имени автора комментария и текста коммекнтария -- */
     if (name.value === "") { // Поле ввода имени автора комментария НЕ ЗАПОЛНЕНО
