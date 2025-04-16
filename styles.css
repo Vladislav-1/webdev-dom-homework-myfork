@@ -40,6 +40,10 @@ body {
     gap: 24px;
   }
 
+  #comment-quote {
+    font-style: italic;
+  }
+
   .comment {
     padding: 48px;
   }

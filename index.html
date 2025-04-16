@@ -31,6 +31,7 @@
   /* -- Общие переменные -- */
   const name = document.getElementById("name-input"); // Нахождение по идентификатору поля ввода имени автора комментария
   const text = document.getElementById("text-input"); // Нахождение по идентификатору поля ввода текста комментария
+
   /* ---------------------- */
 
   /* -- Переменные для даты -- */
@@ -72,7 +73,7 @@
 
   /* -- 02. Рендер-функция -- */
 
-  const renderComments = () => {
+  const renderComments = () => { // Функция визуализации карточек отзывов
     const list = document.querySelector(".comments");
     list.innerHTML = comments.map((comment, index) => {
       return `
@@ -105,11 +106,10 @@
         const index = likeButton.dataset.index; // Определение индекса иконки лайка
         const comment = comments[index]; // Определение комментария по индексу
 
-        comment.likes = comment.isLiked ? comment.likes - 1 : comment.likes + 1;
+        comment.likes = comment.isLiked ? comment.likes - 1 : comment.likes + 1; // Приращение/убавление счетчика лайков
+        comment.isLiked = !comment.isLiked; // Изменение флага состояния лайка
 
-        comment.isLiked = !comment.isLiked;
-
-        renderComments();
+        renderComments(); // Вывод рендер-функции
       });
     };
 
@@ -127,7 +127,7 @@
 
   };
 
-  /* -------------------- */
+  /* ------------------------ */
 
   /* -- Запуск рендер-функции -- */
   renderComments();
@@ -156,17 +156,17 @@
     if (text.value === "") { // Поле ввода текста комментария НЕ ЗАПОЛНЕНО
       text.style.background = "red";
     };
-    if (name.value != "" && text.value != "") { // Поле ввода имени автора комментари и текста комментария ЗАПОЛНЕНЫ
-      comments.push(newComment);
-      name.style.background = "rgb(255,255,255)";
-      text.style.background = "rgb(255,255,255)";
+    if (name.value != "" && text.value != "") { // Проверка заполнения полей ввода имени автора комментари и текста комментария ЗАПОЛНЕНЫ
+      comments.push(newComment); // Добавление нового комментария, если все поля заполнены
+      name.style.background = "rgb(255,255,255)"; // Возврат поля ввода имени автора комментария в первоначальный вид
+      text.style.background = "rgb(255,255,255)"; // Возврат поля ввода текста комментария в первоначальный вид
     };
     /* ---------------------------------------------------------------------------------------- */
 
-    renderComments();
+    renderComments(); // Вывод рендер-функции
 
-    name.value = "";
-    text.value = "";
+    name.value = ""; // Очистка поля ввода имени автора комментария от введённой ранее информации
+    text.value = ""; // Очистка поля ввода текста комментария от введённой ранее информации
   });
   /* ------------------------------- */
 
