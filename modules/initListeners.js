@@ -68,11 +68,10 @@ export const initAddCommentListener = () => {
             comments.push(newComment);
             name.style.background = 'rgb(255,255,255)';
             text.style.background = 'rgb(255,255,255)';
+            name.value = '';
+            text.value = '';
         }
 
         renderComments();
-
-        name.value = '';
-        text.value = '';
     });
 };
