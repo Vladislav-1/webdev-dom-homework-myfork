@@ -48,20 +48,23 @@ export const initAddCommentListener = () => {
 
     addButton.addEventListener('click', () => {
         const newComment = {
-            name: sanitizeHtml(name.value),
+            name: sanitizeHtml(name.value.trimStart().trimEnd()),
             date: `${currentDataNumber}.${currentMonth}.${currentYear} ${currentLocalTime}`,
-            text: sanitizeHtml(text.value),
+            text: sanitizeHtml(text.value.trimStart().trimEnd()),
             likes: 0,
             isLiked: false,
         };
 
-        if (name.value === '') {
+        if (name.value.trimStart().trimEnd() === '') {
             name.style.background = 'red';
         }
-        if (text.value === '') {
+        if (text.value.trimStart().trimEnd() === '') {
             text.style.background = 'red';
         }
-        if (name.value != '' && text.value != '') {
+        if (
+            name.value.trimStart().trimEnd() != '' &&
+            text.value.trimStart().trimEnd() != ''
+        ) {
             comments.push(newComment);
             name.style.background = 'rgb(255,255,255)';
             text.style.background = 'rgb(255,255,255)';
