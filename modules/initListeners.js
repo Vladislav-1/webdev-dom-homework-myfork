@@ -1,6 +1,7 @@
-import { comments } from './comments.js';
+import { comments, updateComments } from './comments.js';
 import { sanitizeHtml } from './sanitizeHtml.js';
 import { renderComments } from './renderComments.js';
+import { postComment } from './api.js';
 
 export const initLikeListeners = (renderComments) => {
     const likeButtons = document.querySelectorAll('.like-button');
@@ -47,15 +48,15 @@ export const initAddCommentListener = () => {
     const addButton = document.querySelector('.add-form-button');
 
     addButton.addEventListener('click', () => {
-        const newComment = {
+        /* const newComment = {
             name: sanitizeHtml(name.value.trimStart().trimEnd()),
             date: `${currentDataNumber}.${currentMonth}.${currentYear} ${currentLocalTime}`,
             text: sanitizeHtml(text.value.trimStart().trimEnd()),
             likes: 0,
             isLiked: false,
-        };
+        }; */
 
-        if (name.value.trimStart().trimEnd() === '') {
+        /*if (name.value.trimStart().trimEnd() === '') {
             name.style.background = 'red';
         }
         if (text.value.trimStart().trimEnd() === '') {
@@ -66,12 +67,38 @@ export const initAddCommentListener = () => {
             text.value.trimStart().trimEnd() != ''
         ) {
             comments.push(newComment);
+            renderComments();
+
             name.style.background = 'rgb(255,255,255)';
             text.style.background = 'rgb(255,255,255)';
             name.value = '';
             text.value = '';
-        }
+        }*/
 
-        renderComments();
+        postComment(
+            sanitizeHtml(text.value.trimStart().trimEnd()),
+            sanitizeHtml(name.value.trimStart().trimEnd()),
+        ).then(() => {
+            updateComments(data);
+            renderComments();
+            if (name.value.trimStart().trimEnd() === '') {
+                name.style.background = 'red';
+            }
+            if (text.value.trimStart().trimEnd() === '') {
+                text.style.background = 'red';
+            }
+            if (
+                name.value.trimStart().trimEnd() != '' &&
+                text.value.trimStart().trimEnd() != ''
+            ) {
+                /* comments.push(newComment); */
+                /* renderComments(); */
+
+                name.style.background = 'rgb(255,255,255)';
+                text.style.background = 'rgb(255,255,255)';
+                name.value = '';
+                text.value = '';
+            }
+        });
     });
 };
